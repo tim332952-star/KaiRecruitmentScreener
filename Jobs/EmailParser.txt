@@ -1,0 +1,368 @@
+
+I need a Python developer to extract structured transaction data from approximately **4,200 exported Outlook emails** and place the results into Excel and CSV files.
+
+The emails cover approximately 15 years of transaction approvals. They have already been exported from Outlook, so **no mailbox access, Microsoft account access, or Microsoft Graph work is required**.
+
+The export includes:
+
+* Original `.eml` files
+* A `messages.jsonl` file containing email metadata and email bodies
+* A `messages_index.csv` file containing an index of the exported messages
+
+There are **no PDFs, scanned documents, or attachments to process**. All relevant data is contained in the email bodies.
+
+I also have an existing Excel workbook covering approximately the most recent 18 months. This workbook will serve as the known-good reference for understanding the output structure and validating the accuracy of the extraction.
+
+## Nature of the Emails
+
+The emails are semi-structured but largely standardized.
+
+My current estimate is:
+
+* Approximately 90% of the emails follow five or six common formats
+* There may be approximately 15 format variations in total
+* At least 95% of the emails should be capable of automated extraction
+* I am prepared to handle the remaining exceptions manually
+
+The goal is not to create a system that interprets every unusual email. The goal is to build a dependable parser for the standardized majority and produce a clear exception report for anything that cannot be processed confidently.
+
+## Primary Objective
+
+Develop a reliable and repeatable Python program that:
+
+1. Reads the exported email data
+2. Recognizes the applicable email format
+3. Extracts each individual transaction
+4. Produces structured transaction-level data
+5. Aggregates the data into the format used by my existing Excel workbook
+6. Identifies and reports exceptions without guessing
+7. Allows every output record to be traced back to its source email
+
+The preferred approach is deterministic and rule-based, using:
+
+* Python
+* Standard email and MIME parsing libraries
+* Regular expressions
+* Format-specific parsing templates
+* pandas
+* OpenPyXL or XlsxWriter
+
+AI or external language-model services should not be necessary for the standardized formats. Confidential email content may not be sent to an external AI service without my prior written approval.
+
+## Data to Be Extracted
+
+Each email may contain:
+
+* One transaction
+* Multiple transactions for one issuer
+* Transactions involving multiple issuers
+* Block transactions
+* Equity transactions
+* Different loan facilities or instruments
+* A combination of transaction types
+
+One email may therefore need to produce multiple transaction-level rows.
+
+The transaction-level data may include:
+
+* Request date
+* Transaction or approval date
+* Issuer
+* Investment vehicle, fund, or CLO
+* Facility or instrument
+* Transaction description
+* Par amount or commitment
+* Price
+* Purchase amount or market value
+* Block classification
+* Equity classification
+* Block name, where applicable
+* Number of transactions within the email
+
+The final summarized output should follow the structure and logic of my existing workbook, including fields such as:
+
+* `RDate`
+* `TDate`
+* `Block`
+* `Eq`
+* `BlockName`
+* `Transfers`
+* `Issuers`
+* `Issuer`
+* `Commitment`
+* `Market Value`
+
+The precise interpretation of these columns and the aggregation rules will be confirmed during the paid pilot by comparing the automated extraction with the corresponding entries in the existing workbook.
+
+## Required Audit Fields
+
+Every extracted transaction or summarized record must remain traceable to its source.
+
+The output should retain:
+
+* Source `.eml` filename
+* Source-folder path
+* Email subject
+* Sender
+* Sent date
+* Received date
+* Internet Message ID
+* Microsoft Graph message ID
+* Transaction sequence number within the email
+* Parser template or format used
+* Parsing status
+* Exception reason, when applicable
+
+## Required Processing Logic
+
+The program should:
+
+1. Read the `.eml` files or the `messages.jsonl` file.
+
+2. Identify which recognized format or template applies to each email.
+
+3. Extract all transactions from the relevant email content.
+
+4. Avoid accidentally parsing:
+
+* Quoted email history
+* Forwarded material that is not part of the approval
+* Email signatures
+* Confidentiality notices
+* Standard disclaimers
+* Unrelated text
+
+5. Correctly handle emails containing multiple transactions.
+
+6. Convert amounts into proper numeric fields, including values containing:
+
+* Dollar signs
+* Commas
+* Percentages
+* Decimals
+* Parentheses
+* Other common financial formatting
+
+7. Standardize issuer names according to the existing workbook.
+
+8. Apply block and equity classifications consistently with the reference workbook.
+
+9. Aggregate transaction-level records into the required summary rows.
+
+10. Detect duplicate emails using message identifiers and, where useful, content hashes.
+
+11. Perform mathematical checks when the email provides par amount, price, and market value.
+
+12. Flag missing, inconsistent, or ambiguous data rather than inventing a value.
+
+13. Continue processing when an individual email cannot be parsed.
+
+14. Produce a complete exception report.
+
+15. Produce a processing log showing:
+
+* Successfully processed emails
+* Duplicate emails
+* Skipped emails
+* Exception emails
+* Failed emails
+
+## Exception Handling
+
+I am prepared to review and manually handle the unusual emails that fall outside the standardized formats.
+
+The exception report should make that review straightforward. For each exception, it should include:
+
+* Source `.eml` filename
+* Source-folder path
+* Email subject
+* Email date
+* Source message ID
+* Suspected format
+* Fields successfully extracted
+* Missing or ambiguous fields
+* Clear reason the email was classified as an exception
+* Suggested action, when obvious
+
+The parser must not silently omit an email or transaction. Every source email should end with a clearly documented status, such as:
+
+* Successfully parsed
+* Duplicate
+* Excluded under an agreed rule
+* Needs manual review
+* Failed due to a technical error
+
+## Validation Against Existing Workbook
+
+The existing 18-month Excel workbook will be used as the validation set.
+
+The freelancer must compare the automated results with the corresponding known-good workbook entries and provide a reconciliation report showing:
+
+* Exact matches
+* Missing records
+* Unexpected additional records
+* Differences in request dates
+* Differences in transaction dates
+* Differences in issuer names
+* Differences in transfer counts
+* Differences in commitment or par amounts
+* Differences in market value
+* Differences in block classifications
+* Differences in equity classifications
+
+A spreadsheet that merely looks plausible will not be sufficient. The results must be objectively reconciled against the known-good data.
+
+Coverage and accuracy should be reported separately.
+
+For example:
+
+* Percentage of emails assigned to a recognized template
+* Percentage of emails successfully parsed
+* Percentage of standard-format emails parsed without error
+* Percentage of numeric fields matching the reference workbook
+* Number and percentage of emails sent to the exception report
+
+## Required Deliverables
+
+The final deliverables should include:
+
+1. Complete Python source code
+
+2. A repeatable parser that can be rerun against the full exported dataset
+
+3. Configuration files or clearly separated parsing functions for each recognized email format
+
+4. A documented inventory of the email formats identified
+
+5. Transaction-level output in Excel and CSV format
+
+6. Summary output matching the structure and logic of the existing workbook
+
+7. Complete exception report
+
+8. Reconciliation report against the 18-month reference workbook
+
+9. Processing log showing successful, duplicate, skipped, exception, and failed records
+
+10. A Windows-compatible `README` with straightforward instructions for running the program
+
+11. A requirements file or other documentation identifying required Python packages
+
+12. Confirmation that all temporary copies of the confidential email data have been deleted after completion
+
+All source code and work product created for this project will belong to me.
+
+## Paid Pilot
+
+The project will begin with a **fixed-price paid pilot** using approximately 75–100 representative emails.
+
+The pilot sample will include:
+
+* Emails from different years
+* The most common email formats
+* Single-transaction emails
+* Multiple-transaction emails
+* Block transactions
+* Equity transactions
+* Several less-common variations
+* Some known exceptions
+* Corresponding entries from the existing workbook
+
+The pilot deliverables should include:
+
+1. Identification and description of the common email formats
+
+2. A working parser for the most common formats
+
+3. Transaction-level output for the pilot emails
+
+4. Summary output in the structure of the existing workbook
+
+5. Exception report
+
+6. Reconciliation against the corresponding known-good workbook entries
+
+7. A written explanation of any mismatches
+
+8. An estimate of the percentage of the full dataset covered by the pilot parser
+
+9. A proposed fixed price and schedule for completing the full dataset
+
+The full project will be awarded only after the pilot output has been reviewed and validated.
+
+## Definition of Success
+
+For emails assigned to a supported standard format:
+
+* Dates and numeric values should match the reference records exactly, subject only to agreed rounding rules
+* Multiple transactions must be counted correctly
+* No transaction may be silently omitted
+* No uncertain value may be guessed
+* Every output row must link back to its source email
+* The same input files must produce repeatable results
+
+For the complete dataset:
+
+* The program should automatically process at least 95% of the emails
+* All remaining emails should appear in the exception report
+* The program should finish even when individual emails cannot be parsed
+* Duplicate records should be prevented
+* The final totals should reconcile with the reference workbook for the period covered by that workbook
+
+## Security and Confidentiality
+
+The email export contains confidential financial and business information.
+
+Requirements:
+
+* The freelancer must be willing to sign an NDA
+* No Outlook password or mailbox access will be provided
+* Files may not be uploaded to a public repository
+* Email content may not be submitted to external AI services without prior written approval
+* The freelancer must disclose any third-party service that would receive or process the email content
+* Processing should preferably occur locally in a controlled environment
+* Temporary copies of the email data must be securely deleted after completion
+* The source files may not be retained or reused
+* All source code and intellectual property developed for this project will belong to me
+
+A restricted pilot dataset will be shared only with the selected freelancer after the project terms and confidentiality requirements have been agreed upon.
+
+## Preferred Qualifications
+
+* Strong Python experience
+* Experience parsing `.eml`, MIME, HTML, or plain-text email content
+* Experience extracting data from semi-structured documents
+* Strong regular-expression and text-processing skills
+* pandas experience
+* OpenPyXL or XlsxWriter experience
+* Experience reconciling extracted data against a known dataset
+* Experience designing exception reports and audit trails
+* Familiarity with financial transaction data is helpful but not mandatory
+
+This is not a manual data-entry project, an OCR project, a PDF-extraction project, or a web-scraping project.
+
+## Please Address These Questions in Your Proposal
+
+1. Describe a similar project involving `.eml`, MIME, Outlook exports, or semi-structured email extraction.
+
+2. How would you separate the relevant current email content from quoted history, signatures, and disclaimers?
+
+3. How would you handle an email containing several transactions?
+
+4. How would you identify and maintain multiple email-format templates?
+
+5. How would you prevent duplicate records?
+
+6. How would you validate the extraction against my existing workbook?
+
+7. How would you report emails that cannot be parsed confidently?
+
+8. Would any email content leave your local processing environment?
+
+9. What source code and documentation would you deliver?
+
+10. Please provide a fixed-price estimate and schedule for the paid pilot.
+
+11. After a successful pilot, please provide an estimated fixed-price range and schedule for processing the complete dataset.
+
+Please begin your proposal with the phrase **“EMAIL PARSER”** so I know you have read the full project description.
