@@ -1,0 +1,6 @@
+pandas
+python-docx
+PyPDF2
+spacy
+scikit-learn
+openpyxl
